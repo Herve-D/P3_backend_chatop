@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -16,41 +15,31 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "users")
-public class ChatopUser {
+@Table(name = "rentals")
+public class Rental {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long userId;
-	private String email;
+	private Long id;
 	private String name;
-	private String password;
+	private Double surface;
+	private Double price;
+	private String picture;
+	private String description;
+	private Long owner_id;
 	private Date created_at;
 	private Date updated_at;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "owner_id")
-	List<Rental> rentals = new ArrayList<>();
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "rental_id")
 	List<Message> messages = new ArrayList<>();
 
-	public Long getUserId() {
-		return userId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -61,12 +50,44 @@ public class ChatopUser {
 		this.name = name;
 	}
 
-	public String getPassword() {
-		return password;
+	public Double getSurface() {
+		return surface;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setSurface(Double surface) {
+		this.surface = surface;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Long getOwner_id() {
+		return owner_id;
+	}
+
+	public void setOwner_id(Long owner_id) {
+		this.owner_id = owner_id;
 	}
 
 	public Date getCreated_at() {
@@ -83,14 +104,6 @@ public class ChatopUser {
 
 	public void setUpdated_at(Date updated_at) {
 		this.updated_at = updated_at;
-	}
-
-	public List<Rental> getRentals() {
-		return rentals;
-	}
-
-	public void setRentals(List<Rental> rentals) {
-		this.rentals = rentals;
 	}
 
 	public List<Message> getMessages() {
