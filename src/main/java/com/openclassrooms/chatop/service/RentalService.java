@@ -17,7 +17,7 @@ public class RentalService {
 
 	@Autowired
 	private IRentalRepository rentalRepository;
-	
+
 	@Autowired
 	private AuthService authService;
 
@@ -27,6 +27,23 @@ public class RentalService {
 
 	public Iterable<Rental> getRentals() {
 		return rentalRepository.findAll();
+	}
+
+	public Rental saveRental(String name, Double surface, Double price, String picture, String description) {
+		ChatopUser user = authService.getCurrentUser();
+
+		Rental rental = new Rental();
+		rental.setName(name);
+		rental.setSurface(surface);
+		rental.setPrice(price);
+		rental.setPicture(picture);
+		rental.setDescription(description);
+		rental.setOwner_id(user.getUserId());
+		rental.setCreated_at(new Date());
+		rental.setUpdated_at(new Date());
+
+		Rental savedRental = rentalRepository.save(rental);
+		return savedRental;
 	}
 
 	public Rental updateRental(Rental rental) {
@@ -39,21 +56,6 @@ public class RentalService {
 		updatedRental.setCreated_at(updatedRental.getCreated_at());
 		updatedRental.setUpdated_at(new Date());
 		return rentalRepository.save(updatedRental);
-	}
-
-	public Rental saveRental(Rental rental) {
-		ChatopUser user=authService.getCurrentUser();
-		//TODO
-		System.out.print( rental.getName());
-		rental.setSurface(rental.getSurface());
-		rental.setPrice(rental.getPrice());
-		rental.setPicture(rental.getPicture());
-		rental.setDescription(rental.getDescription());
-		rental.setOwner_id(user.getUserId());
-		rental.setCreated_at(new Date());
-		rental.setUpdated_at(new Date());
-		Rental savedRental = rentalRepository.save(rental);
-		return savedRental;
 	}
 
 	public void deleteRental(Long id) {

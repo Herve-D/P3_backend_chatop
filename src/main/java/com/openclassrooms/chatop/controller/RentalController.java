@@ -1,5 +1,7 @@
 package com.openclassrooms.chatop.controller;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.chatop.entity.Rental;
@@ -37,11 +40,15 @@ public class RentalController {
 	 * @return The rental object saved
 	 */
 	@PostMapping("/rentals")
-	public ResponseEntity<String> createRental(@RequestBody Rental rental) {
-		logger.debug("ici");
+	public ResponseEntity<Map<String, String>> createRental(@RequestParam("name") String name,
+			@RequestParam("surface") Double surface, @RequestParam("price") Double price,
+			@RequestParam("picture") String picture, @RequestParam("description") String description) {
+		logger.debug("ctler");
 		try {
-			rentalService.saveRental(rental);
-			return ResponseEntity.status(HttpStatus.CREATED).body("Rental created!");
+			rentalService.saveRental(name, surface, price, picture, description);
+//			return ResponseEntity.status(HttpStatus.CREATED).body("Rental created!");
+			return ResponseEntity.ok(Collections.singletonMap("message", "Rental created !"));
+
 		} catch (Exception e) {
 			// Handle any unexpected exceptions
 			logger.error("Error occurred : ", e);

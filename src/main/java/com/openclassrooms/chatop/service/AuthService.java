@@ -63,24 +63,24 @@ public class AuthService {
 			throw new IllegalArgumentException("Email already exists.");
 		}
 		String encodedPassword = passwordEncoder.encode(user.getPassword());
-		
+
 		user.setPassword(encodedPassword);
 		user.setName(user.getName());
 		user.setEmail(user.getEmail());
 		user.setCreated_at(new Date());
 		user.setUpdated_at(new Date());
-		
+
 		userRepository.save(user);
 
 		UserDetails userDetails = new User(user.getEmail(), user.getPassword(), Collections.emptyList());
-		
+
 		return userDetails;
 	}
 
 	public String login(Login login) throws BadCredentialsException {
 		try {
 			Authentication authenticate = authenticationManager
-					.authenticate(new UsernamePasswordAuthenticationToken(login.getLogin(), login.getPassword()));
+					.authenticate(new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
 
 			User authenticatedUser = (User) authenticate.getPrincipal();
 			String token = jwtService.generateToken(authenticatedUser);
@@ -97,7 +97,6 @@ public class AuthService {
 		if (authentication == null || !authentication.isAuthenticated()) {
 			return null;
 		}
-
 
 		String name = authentication.getName();
 

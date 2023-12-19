@@ -1,9 +1,10 @@
 package com.openclassrooms.chatop.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.openclassrooms.chatop.entity.ChatopUser;
 import com.openclassrooms.chatop.entity.Message;
 import com.openclassrooms.chatop.repository.IMessageRepository;
 
@@ -12,9 +13,6 @@ public class MessageService {
 
 	@Autowired
 	private IMessageRepository messageRepository;
-	
-	@Autowired
-	private AuthService authService;
 
 	/**
 	 * Posts a message for a rental.
@@ -22,8 +20,15 @@ public class MessageService {
 	 * @param message - The object message to save.
 	 * @return The Message object.
 	 */
-	public Message saveMessage(Message message) {
-		ChatopUser user=authService.getCurrentUser();
+	public Message saveMessage(Long rental_id, Long user_id, String text) {
+
+		Message message = new Message();
+		message.setRental_id(rental_id);
+		message.setUser_id(user_id);
+		message.setMessage(text);
+		message.setCreated_at(new Date());
+		message.setUpdated_at(new Date());
+
 		Message savedMessage = messageRepository.save(message);
 		return savedMessage;
 	}

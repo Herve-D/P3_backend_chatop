@@ -1,5 +1,8 @@
 package com.openclassrooms.chatop.controller;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +69,11 @@ public class AuthController {
 	 * @return A response entity containing the authentication response.
 	 */
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody Login login) {
-		
-		logger.error("login controller : " + login.getLogin() + " " + login.getPassword());
-		
+	public ResponseEntity<Map<String, String>> login(@RequestBody Login login) {
+
 		try {
-			String authSuccess = authService.login(login);
-			return ResponseEntity.ok().body(authSuccess);
+			String token = authService.login(login);
+			return ResponseEntity.ok(Collections.singletonMap("token", token));
 
 		} catch (Exception e) {
 			// Handle any unexpected exceptions
