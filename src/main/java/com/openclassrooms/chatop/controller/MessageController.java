@@ -19,10 +19,12 @@ import com.openclassrooms.chatop.entity.Message;
 import com.openclassrooms.chatop.service.MessageService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -47,14 +49,15 @@ public class MessageController {
 			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Message not sent.", content = @Content) })
 	@PostMapping("/messages")
-	public ResponseEntity<Map<String, String>> createMessage(@RequestParam("rental_id") Long rental_id,
-			@RequestParam("user_id") Long user_id, @RequestParam("message") String message) {
+	public ResponseEntity<Map<String, String>> createMessage(
+			@Parameter(description = "rental_id") @Valid @RequestParam("rental_id") Long rental_id,
+			@Parameter(description = "user_id") @Valid @RequestParam("user_id") Long user_id,
+			@Parameter(description = "message") @Valid @RequestParam("message") String message) {
 
 		try {
 			logger.info("Message is : ", message);
 
 			messageService.saveMessage(rental_id, user_id, message);
-//			return ResponseEntity.ok("Message sent!");
 			return ResponseEntity.ok(Collections.singletonMap("message", "Message sent !"));
 
 		} catch (IllegalArgumentException e) {

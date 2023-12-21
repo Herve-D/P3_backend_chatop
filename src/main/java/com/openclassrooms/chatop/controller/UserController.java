@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.openclassrooms.chatop.entity.ChatopUser;
 import com.openclassrooms.chatop.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api")
@@ -31,6 +37,11 @@ public class UserController {
 	 * @param id - The id of the user
 	 * @return An user object filled
 	 */
+	@Operation(summary = "Get user by Id", description = "Route to retrieve an user by their Id.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "User found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ChatopUser.class))),
+			@ApiResponse(responseCode = "404", description = "User not found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@GetMapping("/user/{id}")
 	public ResponseEntity<ChatopUser> getUserById(@PathVariable("id") Long id) {
 		try {

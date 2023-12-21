@@ -23,6 +23,13 @@ import com.openclassrooms.chatop.entity.ChatopUser;
 import com.openclassrooms.chatop.entity.Login;
 import com.openclassrooms.chatop.service.AuthService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/auth")
@@ -42,6 +49,11 @@ public class AuthController {
 	 * @param user - The user object to be registered.
 	 * @return A response entity containing the registered user and access token.
 	 */
+	@Operation(summary = "Register a new user", description = "Route for registering a new user.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "User registered.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ChatopUser.class))),
+			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+			@ApiResponse(responseCode = "404", description = "Internal server error.", content = @Content) })
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestBody ChatopUser user) {
 		try {
@@ -68,8 +80,13 @@ public class AuthController {
 	 * @param login - The login object containing user credentials.
 	 * @return A response entity containing the authentication response.
 	 */
+	@Operation(summary = "User login", description = "Route for user login.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Login successful.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Login.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+			@ApiResponse(responseCode = "404", description = "User not found", content = @Content) })
 	@PostMapping("/login")
-	public ResponseEntity<Map<String, String>> login(@RequestBody Login login) {
+	public ResponseEntity<Map<String, String>> login(@Valid @RequestBody Login login) {
 
 		try {
 			String token = authService.login(login);
@@ -87,6 +104,11 @@ public class AuthController {
 	 * 
 	 * @return A response entity containing the current logged in user.
 	 */
+	@Operation(summary = "Get current user", description = "Route to get the currently logged-in user.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Current user found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ChatopUser.class))),
+			@ApiResponse(responseCode = "404", description = "Bad request", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@GetMapping("/me")
 	public ResponseEntity<ChatopUser> getCurrentUser() {
 		try {

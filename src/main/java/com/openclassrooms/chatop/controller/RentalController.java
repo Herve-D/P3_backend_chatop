@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.chatop.entity.Rental;
 import com.openclassrooms.chatop.service.RentalService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -39,10 +47,19 @@ public class RentalController {
 	 * @param rental - An object rental
 	 * @return The rental object saved
 	 */
+	@Operation(summary = "Create a rental", description = "Route for creating a new rental.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Rental created.", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class)) }),
+			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+			@ApiResponse(responseCode = "404", description = "Rental not created.", content = @Content) })
 	@PostMapping("/rentals")
-	public ResponseEntity<Map<String, String>> createRental(@RequestParam("name") String name,
-			@RequestParam("surface") Double surface, @RequestParam("price") Double price,
-			@RequestParam("picture") String picture, @RequestParam("description") String description) {
+	public ResponseEntity<Map<String, String>> createRental(
+			@Parameter(description = "name") @Valid @RequestParam("name") String name,
+			@Parameter(description = "surface") @Valid @RequestParam("surface") Double surface,
+			@Parameter(description = "price") @Valid @RequestParam("price") Double price,
+			@Parameter(description = "picture") @Valid @RequestParam("picture") String picture,
+			@Parameter(description = "description") @Valid @RequestParam("description") String description) {
 		logger.debug("ctler");
 		try {
 			rentalService.saveRental(name, surface, price, picture, description);
@@ -62,8 +79,15 @@ public class RentalController {
 	 * @param id
 	 * @return A rental object
 	 */
+	@Operation(summary = "Get a rental", description = "Route to get a rental from the Id.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Rental found.", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class)) }),
+			@ApiResponse(responseCode = "400", description = "Invalid id", content = @Content),
+			@ApiResponse(responseCode = "404", description = "Rental not found.", content = @Content) })
 	@GetMapping("/rentals/{id}")
-	public Rental getRental(@PathVariable("id") Long id) {
+	public Rental getRental(
+			@Parameter(description = "id of the rental to be found") @Valid @PathVariable("id") Long id) {
 		Optional<Rental> rental = rentalService.getRental(id);
 		if (rental.isPresent()) {
 			return rental.get();
@@ -77,6 +101,11 @@ public class RentalController {
 	 * 
 	 * @return An Iterable object of all Rentals
 	 */
+	@Operation(summary = "Get all rentals", description = "Route to get a list of all the rentals.")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Rentals found", content = {
+			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Rental.class))) }),
+			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+			@ApiResponse(responseCode = "404", description = "Couldn't find any rentals.", content = @Content) })
 	@GetMapping("/rentals")
 	public Iterable<Rental> getRentals() {
 		return rentalService.getRentals();
@@ -89,20 +118,17 @@ public class RentalController {
 	 * @param rental - The rental object updated
 	 * @return
 	 */
+	@Operation(summary = "Update a rental", description = "Route for updating an existing rental.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Rental updated.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class))),
+			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+			@ApiResponse(responseCode = "404", description = "Rental not found.", content = @Content) })
 	@PutMapping("/rentals/{id}")
-	public ResponseEntity<String> updateRental(@PathVariable("id") Long id, @RequestBody Rental rental) {
+	public ResponseEntity<String> updateRental(
+			@Parameter(description = "Rental to be updated") @Valid @PathVariable("id") Long id,
+			@Valid @RequestBody Rental rental) {
 		rentalService.updateRental(rental);
 		return ResponseEntity.ok("Rental updated!");
-	}
-
-	/**
-	 * Delete - Delete a rental
-	 * 
-	 * @param id - The id of the rental to delete
-	 */
-	@DeleteMapping("/rentals/{id}")
-	public void deleteRental(@PathVariable("id") Long id) {
-		rentalService.deleteRental(id);
 	}
 
 }
