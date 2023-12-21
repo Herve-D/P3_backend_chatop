@@ -15,7 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.chatop.entity.Message;
 import com.openclassrooms.chatop.service.MessageService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -33,6 +40,12 @@ public class MessageController {
 	 * @param message - An object message
 	 * @return The message object saved
 	 */
+	@Operation(summary = "Send a message", description = "Route for sending a new message.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Message sent.", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class)) }),
+			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+			@ApiResponse(responseCode = "404", description = "Message not sent.", content = @Content) })
 	@PostMapping("/messages")
 	public ResponseEntity<Map<String, String>> createMessage(@RequestParam("rental_id") Long rental_id,
 			@RequestParam("user_id") Long user_id, @RequestParam("message") String message) {

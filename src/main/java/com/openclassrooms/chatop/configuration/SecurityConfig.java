@@ -52,8 +52,9 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> {
 					auth
 							// Allow access to login and register endpoints without authentication.
-							.requestMatchers("/api/auth/login", "/api/auth/register").permitAll().anyRequest()
-							.authenticated(); // Require authentication for all other requests.
+							.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+							.requestMatchers("/doc/**").permitAll() // Swagger UI v3 (OpenAPI)
+							.anyRequest().authenticated(); // Require authentication for all other requests.
 				})
 				// Add JWT token filter before UsernamePasswordAuthenticationFilter.
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();
