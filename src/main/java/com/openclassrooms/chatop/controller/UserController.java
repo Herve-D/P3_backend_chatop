@@ -50,12 +50,12 @@ public class UserController {
 
 		} catch (UsernameNotFoundException e) {
 			// Handle the case where the user is not found
-			logger.error("User not found : ", e.getMessage(), e);
+			logger.error("User not found : " + e.getMessage(), e);
 			return ResponseEntity.notFound().build();
 
 		} catch (Exception e) {
 			// Handle any other unexpected exceptions
-			logger.error("Error occurred while fetching user : ", e);
+			logger.error("Error occurred while fetching user : " + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}

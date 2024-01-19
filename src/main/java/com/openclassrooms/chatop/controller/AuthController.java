@@ -55,7 +55,7 @@ public class AuthController {
 			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Internal server error.", content = @Content) })
 	@PostMapping("/register")
-	public ResponseEntity<String> register(@RequestBody ChatopUser user) {
+	public ResponseEntity<Map<String, String>> register(@Valid @RequestBody ChatopUser user) {
 		try {
 			// Create a new user
 			User registeredUser = (User) authService.register(user);
@@ -64,12 +64,11 @@ public class AuthController {
 			String token = jwtService.generateToken(registeredUser);
 			logger.info("Token is : " + token);
 
-			return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, token)
-					.body(registeredUser.getUsername() + " successfully authenticated.");
+			return ResponseEntity.ok(Collections.singletonMap("token", token));
 
 		} catch (Exception e) {
 			// Handle any unexpected exceptions
-			logger.error("Error occurred while registering user : ", e);
+			logger.error("Error occurred while registering user : " + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -94,7 +93,7 @@ public class AuthController {
 
 		} catch (Exception e) {
 			// Handle any unexpected exceptions
-			logger.error("Error occurred while fetching current user : ", e);
+			logger.error("Error occurred while fetching current user : " + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -120,12 +119,12 @@ public class AuthController {
 			}
 		} catch (UsernameNotFoundException e) {
 			// Handle the case where the user is not found
-			logger.error("User not found : ", e.getMessage(), e);
+			logger.error("User not found : " + e.getMessage(), e);
 			return ResponseEntity.notFound().build();
 
 		} catch (Exception e) {
 			// Handle any other unexpected exceptions
-			logger.error("Error occurred while fetching current user : ", e);
+			logger.error("Error occurred while fetching current user : " + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}

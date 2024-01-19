@@ -1,6 +1,7 @@
 package com.openclassrooms.chatop.controller;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.openclassrooms.chatop.entity.Rental;
+import com.openclassrooms.chatop.service.FileUploadService;
 import com.openclassrooms.chatop.service.RentalService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +44,9 @@ public class RentalController {
 	@Autowired
 	private RentalService rentalService;
 
+	@Autowired
+	private FileUploadService fileUpload;
+
 	/**
 	 * Create - Add a new rental
 	 * 
@@ -58,17 +64,46 @@ public class RentalController {
 			@Parameter(description = "name") @Valid @RequestParam("name") String name,
 			@Parameter(description = "surface") @Valid @RequestParam("surface") Double surface,
 			@Parameter(description = "price") @Valid @RequestParam("price") Double price,
-			@Parameter(description = "picture") @Valid @RequestParam("picture") String picture,
+			@Parameter(description = "picture") @Valid @RequestParam("picture") MultipartFile picture,
 			@Parameter(description = "description") @Valid @RequestParam("description") String description) {
-		logger.debug("ctler");
 		try {
-			rentalService.saveRental(name, surface, price, picture, description);
-//			return ResponseEntity.status(HttpStatus.CREATED).body("Rental created!");
+			String pictureUrl = fileUpload.uploadFile(picture);
+			rentalService.saveRental(name, surface, price, pictureUrl, description);
 			return ResponseEntity.ok(Collections.singletonMap("message", "Rental created !"));
 
 		} catch (Exception e) {
 			// Handle any unexpected exceptions
-			logger.error("Error occurred : ", e);
+			logger.error("Error occurred : " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	/**
+	 * Update - Update an existing rental
+	 * 
+	 * @param id     - The id of the rental to update
+	 * @param rental - The rental object updated
+	 * @return
+	 */
+	@Operation(summary = "Update a rental", description = "Route for updating an existing rental.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Rental updated.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class))),
+			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+			@ApiResponse(responseCode = "404", description = "Rental not found.", content = @Content) })
+	@PutMapping("/rentals/{id}")
+	public ResponseEntity<Map<String, String>> updateRental(
+			@Parameter(description = "Rental to be updated") @Valid @PathVariable("id") Long id,
+			// @Valid @RequestBody Rental rental)
+			@Parameter(description = "name") @Valid @RequestParam("name") String name,
+			@Parameter(description = "surface") @Valid @RequestParam("surface") Double surface,
+			@Parameter(description = "price") @Valid @RequestParam("price") Double price,
+			@Parameter(description = "description") @Valid @RequestParam("description") String description) {
+		try {
+			rentalService.updateRental(id, name, surface, price, description);
+			return ResponseEntity.ok(Collections.singletonMap("message", "Rental updated !"));
+		} catch (Exception e) {
+			// Handle any unexpected exceptions
+			logger.error("Error occurred : " + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -99,7 +134,7 @@ public class RentalController {
 	/**
 	 * Read - Get all rentals
 	 * 
-	 * @return An Iterable object of all Rentals
+	 * @return A List object of all Rentals
 	 */
 	@Operation(summary = "Get all rentals", description = "Route to get a list of all the rentals.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Rentals found", content = {
@@ -107,28 +142,9 @@ public class RentalController {
 			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Couldn't find any rentals.", content = @Content) })
 	@GetMapping("/rentals")
-	public Iterable<Rental> getRentals() {
-		return rentalService.getRentals();
-	}
-
-	/**
-	 * Update - Update an existing rental
-	 * 
-	 * @param id     - The id of the rental to update
-	 * @param rental - The rental object updated
-	 * @return
-	 */
-	@Operation(summary = "Update a rental", description = "Route for updating an existing rental.")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Rental updated.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class))),
-			@ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
-			@ApiResponse(responseCode = "404", description = "Rental not found.", content = @Content) })
-	@PutMapping("/rentals/{id}")
-	public ResponseEntity<String> updateRental(
-			@Parameter(description = "Rental to be updated") @Valid @PathVariable("id") Long id,
-			@Valid @RequestBody Rental rental) {
-		rentalService.updateRental(rental);
-		return ResponseEntity.ok("Rental updated!");
+	public ResponseEntity<Map<String, List<Rental>>> getRentals() {
+		List<Rental> rentals = rentalService.getRentals();
+		return ResponseEntity.ok(Collections.singletonMap("rentals", rentals));
 	}
 
 }

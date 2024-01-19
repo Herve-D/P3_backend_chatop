@@ -22,7 +22,7 @@ public class ChatopUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private Long userId;
+	private Long id;
 	private String email;
 	private String name;
 	private String password;
@@ -37,12 +37,12 @@ public class ChatopUser {
 	@JoinColumn(name = "user_id")
 	List<Message> messages = new ArrayList<>();
 
-	public Long getUserId() {
-		return userId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getEmail() {

@@ -35,13 +35,9 @@ public class JwtService {
 	 * @return The generated access token.
 	 */
 	public String generateToken(User user) {
-		return Jwts.builder()
-				.setSubject(format("%s", user.getUsername()))
-				.setIssuer(jwtIssuer)
-				.setIssuedAt(new Date())
+		return Jwts.builder().setSubject(format("%s", user.getUsername())).setIssuer(jwtIssuer).setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week
-				.signWith(SignatureAlgorithm.HS256, jwtSecretKey)
-				.compact();
+				.signWith(SignatureAlgorithm.HS256, jwtSecretKey).compact();
 	}
 
 	/**
@@ -77,15 +73,15 @@ public class JwtService {
 			Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token);
 			return true;
 		} catch (SignatureException ex) {
-			logger.error("Invalid JWT signature - {}", ex.getMessage());
+			logger.error("Invalid JWT signature - {}" + ex.getMessage());
 		} catch (MalformedJwtException ex) {
-			logger.error("Invalid JWT token - {}", ex.getMessage());
+			logger.error("Invalid JWT token - {}" + ex.getMessage());
 		} catch (ExpiredJwtException ex) {
-			logger.error("Expired JWT token - {}", ex.getMessage());
+			logger.error("Expired JWT token - {}" + ex.getMessage());
 		} catch (UnsupportedJwtException ex) {
-			logger.error("Unsupported JWT token - {}", ex.getMessage());
+			logger.error("Unsupported JWT token - {}" + ex.getMessage());
 		} catch (IllegalArgumentException ex) {
-			logger.error("JWT claims string is empty - {}", ex.getMessage());
+			logger.error("JWT claims string is empty - {}" + ex.getMessage());
 		}
 		return false;
 	}

@@ -1,6 +1,7 @@
 package com.openclassrooms.chatop.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class RentalService {
 		return rentalRepository.findById(id);
 	}
 
-	public Iterable<Rental> getRentals() {
+	public List<Rental> getRentals() {
 		return rentalRepository.findAll();
 	}
 
@@ -38,7 +39,7 @@ public class RentalService {
 		rental.setPrice(price);
 		rental.setPicture(picture);
 		rental.setDescription(description);
-		rental.setOwner_id(user.getUserId());
+		rental.setOwner_id(user.getId());
 		rental.setCreated_at(new Date());
 		rental.setUpdated_at(new Date());
 
@@ -46,17 +47,28 @@ public class RentalService {
 		return savedRental;
 	}
 
-	public Rental updateRental(Rental rental) {
-		Rental updatedRental = rentalRepository.findById(rental.getId())
+	public Rental updateRental(Long id, String name, Double surface, Double price, String description) {
+		Rental updatedRental = rentalRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Rental not found."));
-		updatedRental.setName(rental.getName());
-		updatedRental.setSurface(rental.getSurface());
-		updatedRental.setPrice(rental.getPrice());
-		updatedRental.setDescription(rental.getDescription());
-		updatedRental.setCreated_at(updatedRental.getCreated_at());
+		updatedRental.setName(name);
+		updatedRental.setSurface(surface);
+		updatedRental.setPrice(price);
+		updatedRental.setDescription(description);
 		updatedRental.setUpdated_at(new Date());
 		return rentalRepository.save(updatedRental);
 	}
+
+//	public Rental updateRental(Rental rental) {
+//		Rental updatedRental = rentalRepository.findById(rental.getId())
+//				.orElseThrow(() -> new EntityNotFoundException("Rental not found."));
+//		updatedRental.setName(rental.getName());
+//		updatedRental.setSurface(rental.getSurface());
+//		updatedRental.setPrice(rental.getPrice());
+//		updatedRental.setDescription(rental.getDescription());
+//		updatedRental.setCreated_at(updatedRental.getCreated_at());
+//		updatedRental.setUpdated_at(new Date());
+//		return rentalRepository.save(updatedRental);
+//	}
 
 	public void deleteRental(Long id) {
 		rentalRepository.deleteById(id);
