@@ -21,7 +21,7 @@ L'application est composée d'une partie frontend Angular et backend en Java, pr
 * Java JDK 17
 * Maven
 * MySQL / MySQL Workbench
-* Un compte (gratuit) Cloudinary (API key, secret, cloud name)
+* Un compte (gratuit) [Cloudinary](https://cloudinary.com/) (API key, secret, cloud name)
 * Angular 14
 
 ### Backend
