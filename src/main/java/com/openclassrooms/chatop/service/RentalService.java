@@ -58,18 +58,6 @@ public class RentalService {
 		return rentalRepository.save(updatedRental);
 	}
 
-//	public Rental updateRental(Rental rental) {
-//		Rental updatedRental = rentalRepository.findById(rental.getId())
-//				.orElseThrow(() -> new EntityNotFoundException("Rental not found."));
-//		updatedRental.setName(rental.getName());
-//		updatedRental.setSurface(rental.getSurface());
-//		updatedRental.setPrice(rental.getPrice());
-//		updatedRental.setDescription(rental.getDescription());
-//		updatedRental.setCreated_at(updatedRental.getCreated_at());
-//		updatedRental.setUpdated_at(new Date());
-//		return rentalRepository.save(updatedRental);
-//	}
-
 	public void deleteRental(Long id) {
 		rentalRepository.deleteById(id);
 	}

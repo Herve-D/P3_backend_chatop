@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -93,7 +92,6 @@ public class RentalController {
 	@PutMapping("/rentals/{id}")
 	public ResponseEntity<Map<String, String>> updateRental(
 			@Parameter(description = "Rental to be updated") @Valid @PathVariable("id") Long id,
-			// @Valid @RequestBody Rental rental)
 			@Parameter(description = "name") @Valid @RequestParam("name") String name,
 			@Parameter(description = "surface") @Valid @RequestParam("surface") Double surface,
 			@Parameter(description = "price") @Valid @RequestParam("price") Double price,
