@@ -16,13 +16,19 @@ L'application est composée d'une partie frontend Angular et backend en Java, pr
 
 ## Installation et déploiement
 
-### Frontend
+### Prérequis
 
-Récupérer le code depuis ce [dépôt](https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring.git) et y suivre les instructions.
-
-Il sera accessible à l'adresse [localhost:4200](http://localhost:4200/)
+* Java JDK 17
+* Maven
+* MySQL / MySQL Workbench
+* Un compte (gratuit) Cloudinary (API key, secret, cloud name)
+* Angular 14
 
 ### Backend
+
+Cloner le dépôt https://github.com/Herve-D/P3_backend_chatop.git
+
+Importer le projet dans votre IDE.
 
 #### Base de données
 
@@ -42,6 +48,12 @@ Il sera accessible à l'adresse [localhost:4200](http://localhost:4200/)
   spring.datasource.username=your_database_username
   spring.datasource.password=your_database_password
   ```
+* Mettre à jour les propriétés suivantes avec vos informations Cloudinary :
+  ```
+  cloudinary.cloud.name=your_cloud_name
+  cloudinary.api.key=your_api_key
+  cloudinary.api.secret=your_api_secret
+  ```
 * Lancer le build :
   ```
   mvn clean install
@@ -52,6 +64,12 @@ Il sera accessible à l'adresse [localhost:4200](http://localhost:4200/)
   ```
   
   Il sera accessible à l'adresse [localhost:3001](http://localhost:3001)
+
+### Frontend
+
+Récupérer le code depuis ce [dépôt](https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring.git) et y suivre les instructions.
+
+Il sera accessible à l'adresse [localhost:4200](http://localhost:4200/)
 
 ## Documentation
 
